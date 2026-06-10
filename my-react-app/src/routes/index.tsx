@@ -163,17 +163,17 @@ function Counter({
     // ⚡ faster animation for big numbers
     const duration = value > 500 ? 700 : 1200;
 
-    const increment = Math.max(1, Math.floor(value / (duration / 16)));
+    const increment = value / (duration / 16);
 
     const timer = setInterval(() => {
       start += increment;
 
-      if (start >= value) {
-        start = value;
-        clearInterval(timer);
-      }
+if (start >= value) {
+  start = value;
+  clearInterval(timer);
+}
 
-      setCount(start);
+setCount(Math.floor(start));
     }, 16); // ~60fps smooth
 
     return () => clearInterval(timer);
@@ -187,72 +187,91 @@ function Counter({
   );
 }
 
+
 function Home() {
   return (
     <>
       {/* HERO */}
-      <section className="relative min-h-dvh flex items-center overflow-hidden">
-        <motion.img
-          src={hero}
-          className="absolute inset-0 h-full w-full object-cover"
-          animate={{ scale: [1, 1.05, 1] }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-        />
+<section className="relative min-h-dvh flex items-center overflow-hidden">
 
-        <div
-          className="absolute inset-0"
-          style={{ background: "var(--gradient-hero)" }}
-        />
+  {/* BACKGROUND VIDEO */}
+  <motion.video
+    autoPlay
+    muted
+    loop
+    playsInline
+    className="absolute inset-0 h-full w-full object-cover"
+    animate={{ scale: [1, 1.05, 1] }}
+    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+    onError={(e) => {
+      // fallback to image if video fails
+      const target = e.currentTarget as HTMLVideoElement;
+      target.style.display = "none";
+    }}
+  >
+    <source src="/hero-campus.mp4" type="video/mp4" />
+  </motion.video>
 
-        <div className="container-x relative z-10 text-primary-foreground pt-24 pb-16">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="max-w-3xl"
-          >
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-foreground/10 backdrop-blur border border-primary-foreground/20 text-sm mb-6">
-              <Sparkles className="h-3.5 w-3.5 text-gold" /> Enrolments open
-              for 2027
-            </div>
+  {/* FALLBACK IMAGE (always there behind video safety) */}
+  <motion.img
+    src={hero}
+    className="absolute inset-0 h-full w-full object-cover -z-10"
+    animate={{ scale: [1, 1.05, 1] }}
+    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+  />
 
-            <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold leading-[1.05]">
-              Where curiosity{" "}
-              <span className="gradient-text">blossoms</span>.
-            </h1>
+  {/* GRADIENT OVERLAY */}
+  <div
+    className="absolute inset-0 z-10"
+    style={{ background: "var(--gradient-hero)" }}
+  />
 
-            <p className="mt-6 text-lg md:text-xl text-primary-foreground/85 max-w-2xl leading-relaxed">
-              A modern, independent school in the heart of Magill — shaping
-              confident, compassionate learners for over forty years.
-            </p>
+  {/* CONTENT */}
+  <div className="container-x relative z-20 text-primary-foreground pt-24 pb-16">
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8 }}
+      className="max-w-3xl"
+    >
+      <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-foreground/10 backdrop-blur border border-primary-foreground/20 text-sm mb-6">
+        <Sparkles className="h-3.5 w-3.5 text-gold" /> Enrolments open for 2027
+      </div>
 
-            <div className="mt-10 flex flex-wrap gap-4">
-              <motion.div whileHover={{ y: -3 }} whileTap={{ scale: 0.97 }}>
-                <Link to="/contact" className="btn-primary">
-                  Book a Tour <ArrowRight className="h-4 w-4" />
-                </Link>
-              </motion.div>
+      <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold leading-[1.05]">
+        Where curiosity <span className="gradient-text">blossoms</span>.
+      </h1>
 
-              <motion.div whileHover={{ y: -3 }} whileTap={{ scale: 0.97 }}>
-                <Link
-                  to="/about"
-                  className="btn-outline text-primary-foreground"
-                >
-                  Discover Garden
-                </Link>
-              </motion.div>
-            </div>
-          </motion.div>
-        </div>
+      <p className="mt-6 text-lg md:text-xl text-primary-foreground/85 max-w-2xl leading-relaxed">
+        A modern, independent school in the heart of Magill — shaping confident,
+        compassionate learners for over forty years.
+      </p>
 
-        <motion.div
-          animate={{ y: [0, 10, 0] }}
-          transition={{ repeat: Infinity, duration: 2.4 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 text-primary-foreground/70"
-        >
-          <ChevronDown className="h-6 w-6" />
+      <div className="mt-10 flex flex-wrap gap-4">
+        <motion.div whileHover={{ y: -3 }} whileTap={{ scale: 0.97 }}>
+          <Link to="/contact" className="btn-primary">
+            Book a Tour <ArrowRight className="h-4 w-4" />
+          </Link>
         </motion.div>
-      </section>
+
+        <motion.div whileHover={{ y: -3 }} whileTap={{ scale: 0.97 }}>
+          <Link to="/about" className="btn-outline text-primary-foreground">
+            Discover Garden
+          </Link>
+        </motion.div>
+      </div>
+    </motion.div>
+  </div>
+
+  {/* SCROLL INDICATOR */}
+  <motion.div
+    animate={{ y: [0, 10, 0] }}
+    transition={{ repeat: Infinity, duration: 2.4 }}
+    className="absolute bottom-8 left-1/2 -translate-x-1/2 text-primary-foreground/70 z-20"
+  >
+    <ChevronDown className="h-6 w-6" />
+  </motion.div>
+</section>
 
       {/* INTRO */}
       <section className="py-24">
@@ -330,9 +349,15 @@ function Home() {
             {facilities.map((f, i) => (
               <Reveal key={f.title} delay={i * 0.1}>
                 <Link
-                  to="/facilities"
-                  className="group block rounded-2xl overflow-hidden bg-card shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-elegant)] hover:-translate-y-2 transition-all duration-500"
-                >
+  to="/facilities"
+  className={`group block rounded-2xl overflow-hidden bg-card transition-all duration-500 hover:-translate-y-2 ${
+    i === 0
+      ? "shadow-[0_10px_30px_rgba(59,130,246,0.25)] hover:shadow-[0_20px_60px_rgba(59,130,246,0.35)]"
+      : i === 1
+      ? "shadow-[0_10px_30px_rgba(234,179,8,0.25)] hover:shadow-[0_20px_60px_rgba(234,179,8,0.35)]"
+      : "shadow-[0_10px_30px_rgba(34,197,94,0.25)] hover:shadow-[0_20px_60px_rgba(34,197,94,0.35)]"
+  }`}
+>
                   <div className="aspect-[4/3] overflow-hidden relative">
                     <img
                       src={f.img}
@@ -341,7 +366,7 @@ function Home() {
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-500" />
                   </div>
 
-                  <div className="p-6">
+                  <div className="p-6 flex flex-col flex-1">
                     <h3 className="font-display text-2xl font-semibold">
                       {f.title}
                     </h3>
@@ -396,7 +421,7 @@ function Home() {
           <div className="grid md:grid-cols-3 gap-6">
             {news.map((n, i) => (
               <Reveal key={n.title} delay={i * 0.08}>
-                <article className="group rounded-2xl border bg-card p-6 hover:-translate-y-2 hover:shadow-[var(--shadow-elegant)] transition-all duration-500">
+                <article className="group h-full flex flex-col border-l-4 border-gold rounded-2xl bg-card p-6 hover:-translate-y-2 hover:shadow-[var(--shadow-elegant)] transition-all duration-500">
                   <div className="flex items-center gap-3 text-xs text-muted-foreground">
                     <Calendar className="h-3.5 w-3.5" /> {n.date}
                     <span className="px-2 py-0.5 rounded-full bg-accent text-accent-foreground">
@@ -462,7 +487,7 @@ function Home() {
           <div className="grid md:grid-cols-3 gap-6">
             {testimonials.map((t, i) => (
               <Reveal key={t.name} delay={i * 0.08}>
-                <div className="rounded-2xl bg-card p-8 hover:-translate-y-2 hover:shadow-[var(--shadow-elegant)] transition-all duration-500">
+                <div className="h-full flex flex-col rounded-2xl bg-card p-8 hover:-translate-y-2 hover:shadow-[var(--shadow-elegant)] transition-all duration-500">
                   <Quote className="h-8 w-8 text-gold" />
                   <p className="mt-4 italic">"{t.quote}"</p>
                   <div className="mt-6 border-t pt-4">
