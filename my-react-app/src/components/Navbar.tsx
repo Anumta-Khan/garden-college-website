@@ -1,7 +1,8 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Menu, X, GraduationCap, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import logo from "@/assets/logo.png";
 
 const navLinks = [
   { to: "/", label: "Home" },
@@ -45,12 +46,29 @@ export function Navbar() {
     >
       <div className="container-x flex h-20 items-center justify-between">
         <Link to="/" className="flex items-center gap-2.5 group">
-          <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-lg group-hover:scale-105 transition-transform">
-            <GraduationCap className="h-6 w-6" />
-          </span>
+          <span className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-xl shadow-lg group-hover:scale-105 transition-transform">
+  <img
+    src={logo}
+    alt="Garden College Logo"
+    className="h-full w-full object-cover"
+  />
+</span>
           <span className="flex flex-col leading-tight">
-            <span className="font-display text-lg font-bold text-foreground">Garden College</span>
-            <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Excellence in Learning</span>
+            <span
+  className={`font-display text-lg font-bold ${
+    scrolled ? "text-foreground" : "text-white"
+  }`}
+>
+  Garden College
+</span>
+
+<span
+  className={`text-[10px] uppercase tracking-[0.2em] ${
+    scrolled ? "text-muted-foreground" : "text-white/80"
+  }`}
+>
+  Excellence in Learning
+</span>
           </span>
         </Link>
 
@@ -63,7 +81,11 @@ export function Navbar() {
                 onMouseEnter={() => setDrop(item.label)}
                 onMouseLeave={() => setDrop(null)}
               >
-                <button className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-foreground/80 hover:text-foreground">
+                <button className={`flex items-center gap-1 px-3 py-2 text-sm font-medium transition-colors ${
+  scrolled
+    ? "text-foreground hover:text-foreground"
+    : "text-white hover:text-white"
+}`}>
                   {item.label} <ChevronDown className="h-3.5 w-3.5" />
                 </button>
                 <AnimatePresence>
@@ -94,8 +116,15 @@ export function Navbar() {
               <Link
                 key={item.to}
                 to={item.to}
-                className="px-3 py-2 text-sm font-medium text-foreground/80 hover:text-foreground transition-colors relative"
-                activeProps={{ className: "text-foreground after:absolute after:left-3 after:right-3 after:bottom-0 after:h-0.5 after:bg-gold after:rounded-full" }}
+                className={`px-3 py-2 text-sm font-medium transition-colors relative ${
+  scrolled
+    ? "text-foreground hover:text-foreground"
+    : "text-white hover:text-white"
+}`}
+                activeProps={{
+  className:
+    "after:absolute after:left-3 after:right-3 after:bottom-0 after:h-0.5 after:bg-gold after:rounded-full"
+}}
                 activeOptions={{ exact: true }}
               >
                 {item.label}
